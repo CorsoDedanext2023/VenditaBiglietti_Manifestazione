@@ -37,9 +37,9 @@ public class ManifestazioneServiceImpl implements ManifestazioneServiceDef {
     }
 
     @Override
-    public List<ManifestazioneResponse> findAll() {
+    public List<Manifestazione> findAll() {
         List<Manifestazione> manifestazioni = repository.findAll();
-        return mapper.toListDTO(manifestazioni);
+        return manifestazioni;
     }
 
     @Override

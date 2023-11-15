@@ -10,7 +10,7 @@ public interface ManifestazioneServiceDef {
     void addManifestazione(Manifestazione manifestazione);
     void updateManifestazioneById(long id);
     void deleteManifestazioneById(long id);
-    List<ManifestazioneResponse> findAll();
+    List<Manifestazione> findAll();
     List<Manifestazione> findAllByIsCancellatoFalse();
     List<Manifestazione> findAllById(long id);
     List<Manifestazione> findAllByIdAndIsCancellatoFalse(long id);

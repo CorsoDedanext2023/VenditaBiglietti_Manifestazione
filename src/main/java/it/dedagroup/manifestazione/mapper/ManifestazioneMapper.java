@@ -11,9 +11,9 @@ import java.util.stream.Collectors;
 public class ManifestazioneMapper {
         public ManifestazioneResponse toResponse(Manifestazione manifestazione) {
             ManifestazioneResponse DTO = new ManifestazioneResponse();
-            //DTO.setId(manifestazione.getId());
+            DTO.setId(manifestazione.getId());
             DTO.setNome(manifestazione.getNome());
-            //DTO.setCancellato(manifestazione.isCancellato());
+            DTO.setCancellato(manifestazione.isCancellato());
             return DTO;
         }
     public List<ManifestazioneResponse> toListDTO(List<Manifestazione> manifestazioni) {
