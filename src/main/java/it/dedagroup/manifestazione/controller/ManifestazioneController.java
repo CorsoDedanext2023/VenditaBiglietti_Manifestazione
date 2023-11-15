@@ -1,6 +1,5 @@
 package it.dedagroup.manifestazione.controller;
 
-import it.dedagroup.manifestazione.DTO.Response.ManifestazioneResponse;
 import it.dedagroup.manifestazione.model.Manifestazione;
 import it.dedagroup.manifestazione.service.impl.ManifestazioneServiceImpl;
 import lombok.AllArgsConstructor;
@@ -10,39 +9,87 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * Classe controller per la gestione delle manifestazioni.
+ * Questo controller fornisce endpoint per eseguire operazioni CRUD sulle manifestazioni.
+ * Interagisce con il servizio {@link ManifestazioneServiceImpl} per gestire la logica di business.
+ */
 @RestController
 @AllArgsConstructor
 @RequestMapping("/manifestazione")
 public class ManifestazioneController {
 
     private final ManifestazioneServiceImpl manifestazioneService;
+
+    /**
+     * Recupera tutte le manifestazioni.
+     *
+     * @return ResponseEntity contenente una lista di manifestazioni
+     */
     @GetMapping("/all")
-    public ResponseEntity<List<ManifestazioneResponse>> findAll(){
-        return ResponseEntity.status(FOUND).body(manifestazioneService.findAll());
+    public ResponseEntity<List<Manifestazione>> findAll() {
+        List<Manifestazione> manifestazioni = manifestazioneService.findAll();
+        return ResponseEntity.status(FOUND).body(manifestazioni);
     }
+
+    /**
+     * Recupera le manifestazioni per nome.
+     *
+     * @param nome Il nome da cercare
+     * @return ResponseEntity contenente una lista di manifestazioni con il nome specificato
+     */
     @GetMapping("/{nome}")
-    public ResponseEntity<List<Manifestazione>> findAllByNome(@PathVariable String nome){
-        return ResponseEntity.status(FOUND).body(manifestazioneService.findAllByNome(nome));
+    public ResponseEntity<List<Manifestazione>> findAllByNome(@PathVariable String nome) {
+        List<Manifestazione> manifestazioni = manifestazioneService.findAllByNome(nome);
+        return ResponseEntity.status(FOUND).body(manifestazioni);
     }
+
+    /**
+     * Recupera le manifestazioni per ID.
+     *
+     * @param id L'ID da cercare
+     * @return ResponseEntity contenente una lista di manifestazioni con l'ID specificato
+     */
     @GetMapping("/{id}")
-    public ResponseEntity<List<Manifestazione>> findAllById(@PathVariable long id){
-        return ResponseEntity.status(FOUND).body(manifestazioneService.findAllById(id));
+    public ResponseEntity<List<Manifestazione>> findAllById(@PathVariable long id) {
+        List<Manifestazione> manifestazioni = manifestazioneService.findAllById(id);
+        return ResponseEntity.status(FOUND).body(manifestazioni);
     }
+
+    /**
+     * Aggiunge una nuova manifestazione.
+     *
+     * @param manifestazione La manifestazione da aggiungere
+     * @return ResponseEntity con un messaggio che indica il successo dell'operazione
+     */
     @PostMapping("/add")
-    public ResponseEntity<String> addManifestazione(@RequestBody Manifestazione manifestazione){
+    public ResponseEntity<String> addManifestazione(@RequestBody Manifestazione manifestazione) {
         manifestazioneService.addManifestazione(manifestazione);
         return ResponseEntity.status(CREATED).body("Manifestazione creata.");
     }
+
+    /**
+     * Elimina una manifestazione per ID.
+     *
+     * @param id L'ID della manifestazione da eliminare
+     * @return ResponseEntity con un messaggio che indica il successo dell'operazione
+     */
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<String> deleteById(@PathVariable long id){
+    public ResponseEntity<String> deleteById(@PathVariable long id) {
         manifestazioneService.deleteManifestazioneById(id);
         return ResponseEntity.status(OK).body("Manifestazione eliminata.");
     }
 
+    /**
+     * Aggiorna una manifestazione per ID.
+     *
+     * @param id L'ID della manifestazione da aggiornare
+     * @return ResponseEntity con un messaggio che indica il successo dell'operazione
+     */
     @PutMapping("/update/{id}")
-    public ResponseEntity<String> updateManifestazione(@PathVariable long id ){
+    public ResponseEntity<String> updateManifestazione(@PathVariable long id) {
         manifestazioneService.updateManifestazioneById(id);
         return ResponseEntity.status(OK).body("Manifestazione aggiornata.");
     }
-
 }
+
