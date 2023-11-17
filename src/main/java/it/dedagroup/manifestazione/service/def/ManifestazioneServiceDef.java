@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ManifestazioneServiceDef {
-    void addManifestazione(Manifestazione manifestazione);
+    void addManifestazione(String nome);
     void updateManifestazioneById(long id);
     void deleteManifestazioneById(long id);
     List<Manifestazione> findAll();
