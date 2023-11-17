@@ -1,15 +1,15 @@
 package it.dedagroup.manifestazione.service.impl;
 
-import it.dedagroup.manifestazione.DTO.Response.ManifestazioneResponse;
 import it.dedagroup.manifestazione.mapper.ManifestazioneMapper;
 import it.dedagroup.manifestazione.model.Manifestazione;
 import it.dedagroup.manifestazione.repository.ManifestazioneRepository;
 import it.dedagroup.manifestazione.service.def.ManifestazioneServiceDef;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -19,8 +19,10 @@ public class ManifestazioneServiceImpl implements ManifestazioneServiceDef {
 
     private final ManifestazioneMapper mapper;
     @Override
-    public void addManifestazione(Manifestazione manifestazione) {
-        repository.save(manifestazione);
+    public void addManifestazione(String nome) {
+        Manifestazione newManifestazione = new Manifestazione();
+        newManifestazione.setNome(nome);
+        repository.save(newManifestazione);
     }
 
     @Override
@@ -39,31 +41,54 @@ public class ManifestazioneServiceImpl implements ManifestazioneServiceDef {
     @Override
     public List<Manifestazione> findAll() {
         List<Manifestazione> manifestazioni = repository.findAll();
+        if (manifestazioni.isEmpty()){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
         return manifestazioni;
     }
 
     @Override
     public List<Manifestazione> findAllByIsCancellatoFalse() {
-        return repository.findAllByIsCancellatoFalse();
+        List<Manifestazione> manifestazioni = repository.findAllByIsCancellatoFalse();
+        if (manifestazioni.isEmpty()){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+        return manifestazioni;
     }
 
     @Override
     public List<Manifestazione> findAllById(long id) {
-        return repository.findAllById(id);
+        List<Manifestazione> manifestazioni = repository.findAllById(id);
+        if (manifestazioni.isEmpty()){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+        return manifestazioni;
     }
 
     @Override
     public List<Manifestazione> findAllByIdAndIsCancellatoFalse(long id) {
-        return repository.findAllByIdAndIsCancellatoFalse(id);
+        List<Manifestazione> manifestazioni = repository.findAllByIdAndIsCancellatoFalse(id);
+        if (manifestazioni.isEmpty()){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+        return manifestazioni;
     }
 
     @Override
     public List<Manifestazione> findAllByNome(String nome) {
-        return repository.findAllByNome(nome);
+        List<Manifestazione> manifestazioni = repository.findAllByNome(nome);
+        if (manifestazioni.isEmpty()){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+        return manifestazioni;
     }
 
     @Override
     public List<Manifestazione> findAllByNomeAndIsCancellatoFalse(String nome) {
-        return repository.findAllByNomeAndIsCancellatoFalse(nome);
+        List<Manifestazione> manifestazioni = repository.findAllByNomeAndIsCancellatoFalse(nome);
+        if (manifestazioni.isEmpty()){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+        return manifestazioni;
     }
 }
