@@ -1,6 +1,5 @@
 package it.dedagroup.manifestazione.controller;
 
-import it.dedagroup.manifestazione.DTO.Request.ManifestazioneRequest;
 import it.dedagroup.manifestazione.mapper.ManifestazioneMapper;
 import it.dedagroup.manifestazione.model.Manifestazione;
 import it.dedagroup.manifestazione.service.impl.ManifestazioneServiceImpl;
@@ -22,7 +21,6 @@ import java.util.List;
 public class ManifestazioneController {
 
     private final ManifestazioneServiceImpl manifestazioneService;
-    private final ManifestazioneMapper mapper;
 
     /**
      * Aggiunge una nuova manifestazione.

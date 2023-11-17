@@ -1,18 +1,15 @@
 package it.dedagroup.manifestazione.service.impl;
 
-import it.dedagroup.manifestazione.DTO.Response.ManifestazioneResponse;
 import it.dedagroup.manifestazione.mapper.ManifestazioneMapper;
 import it.dedagroup.manifestazione.model.Manifestazione;
 import it.dedagroup.manifestazione.repository.ManifestazioneRepository;
 import it.dedagroup.manifestazione.service.def.ManifestazioneServiceDef;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @AllArgsConstructor
