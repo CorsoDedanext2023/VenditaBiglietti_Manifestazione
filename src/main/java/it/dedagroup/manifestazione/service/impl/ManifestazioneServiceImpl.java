@@ -4,7 +4,9 @@ import it.dedagroup.manifestazione.mapper.ManifestazioneMapper;
 import it.dedagroup.manifestazione.model.Manifestazione;
 import it.dedagroup.manifestazione.repository.ManifestazioneRepository;
 import it.dedagroup.manifestazione.service.def.ManifestazioneServiceDef;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -19,23 +21,38 @@ public class ManifestazioneServiceImpl implements ManifestazioneServiceDef {
 
     private final ManifestazioneMapper mapper;
     @Override
+    @Transactional(rollbackOn = Exception.class)
     public void addManifestazione(String nome) {
-        Manifestazione newManifestazione = new Manifestazione();
-        newManifestazione.setNome(nome);
-        repository.save(newManifestazione);
+        try{
+            Manifestazione newManifestazione = new Manifestazione();
+            newManifestazione.setNome(nome);
+            repository.save(newManifestazione);
+        }catch (OptimisticLockingFailureException e){
+            throw new OptimisticLockingFailureException("Questo oggetto è stato modificato");
+        }
     }
 
     @Override
+    @Transactional(rollbackOn = Exception.class)
     public void updateManifestazioneById(long id) {
-    Manifestazione manifestazione = repository.findById(id).orElseThrow();
-        repository.save(manifestazione);
+        try {
+            Manifestazione manifestazione = repository.findById(id).orElseThrow();
+            repository.save(manifestazione);
+        }catch (OptimisticLockingFailureException e){
+            throw new OptimisticLockingFailureException("Questo oggetto è stato modificato");
+        }
     }
 
     @Override
+    @Transactional(rollbackOn = Exception.class)
     public void deleteManifestazioneById(long id) {
-        Manifestazione manifestazione = repository.findById(id).orElseThrow();
-        manifestazione.setCancellato(true);
-        repository.save(manifestazione);
+        try {
+            Manifestazione manifestazione = repository.findById(id).orElseThrow();
+            manifestazione.setCancellato(true);
+            repository.save(manifestazione);
+        }catch (OptimisticLockingFailureException e){
+            throw new OptimisticLockingFailureException("Questo oggetto è stato modificato");
+        }
     }
 
     @Override
