@@ -7,7 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ManifestazioneRequest {
+public class ManifestazioneRequestConId {
+    private Long id;
     private String nome;
     private Long idCategoria;
 }

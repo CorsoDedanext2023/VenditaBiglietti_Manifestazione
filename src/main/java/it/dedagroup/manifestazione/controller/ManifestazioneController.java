@@ -1,7 +1,11 @@
 package it.dedagroup.manifestazione.controller;
 
+
+import it.dedagroup.manifestazione.DTO.Request.ManifestazioneRequest;
+import it.dedagroup.manifestazione.DTO.Request.ManifestazioneRequestConId;
 import it.dedagroup.manifestazione.DTO.Request.FiltroManifestazioneDTORequest;
 import it.dedagroup.manifestazione.mapper.ManifestazioneMapper;
+
 import it.dedagroup.manifestazione.model.Manifestazione;
 import it.dedagroup.manifestazione.service.impl.ManifestazioneServiceImpl;
 import lombok.AllArgsConstructor;
@@ -10,12 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
-/**
- * Classe controller per la gestione delle manifestazioni.
- * Questo controller fornisce endpoint per eseguire operazioni CRUD sulle manifestazioni.
- * Interagisce con il servizio {@link ManifestazioneServiceImpl} per gestire la logica di business.
- */
 @RestController
 @AllArgsConstructor
 @RequestMapping("/manifestazione")
@@ -23,75 +23,57 @@ public class ManifestazioneController {
 
     private final ManifestazioneServiceImpl manifestazioneService;
 
-    /**
-     * Aggiunge una nuova manifestazione.
-     *
-     * @param nome Il nome della manifestazione da creare
-     * @return ResponseEntity con un messaggio che indica il successo dell'operazione
-     */
-    @GetMapping("/new/{nome}")
-    public ResponseEntity<String> addManifestazione(@PathVariable String nome) {
-        manifestazioneService.addManifestazione(nome);
+    @PostMapping("/new")
+    public ResponseEntity<String> addManifestazione(@RequestBody ManifestazioneRequest manifestazione) {
+        manifestazioneService.addManifestazione(manifestazione);
         return ResponseEntity.status(OK).body("Manifestazione creata.");
     }
 
-    /**
-     * Aggiorna una manifestazione per ID.
-     *
-     * @param id L'ID della manifestazione da aggiornare
-     * @return ResponseEntity con un messaggio che indica il successo dell'operazione
-     */
-    @PutMapping("/update/{id}")
-    public ResponseEntity<String> updateManifestazione(@PathVariable long id) {
-        manifestazioneService.updateManifestazioneById(id);
+    @PutMapping("/update")
+    public ResponseEntity<String> updateManifestazione(@RequestBody ManifestazioneRequestConId request) {
+        manifestazioneService.updateManifestazioneById(request);
         return ResponseEntity.status(OK).body("Manifestazione aggiornata.");
     }
 
-    /**
-     * Elimina una manifestazione per ID.
-     *
-     * @param id L'ID della manifestazione da eliminare
-     * @return ResponseEntity con un messaggio che indica il successo dell'operazione
-     */
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteById(@PathVariable long id) {
         manifestazioneService.deleteManifestazioneById(id);
         return ResponseEntity.status(OK).body("Manifestazione eliminata.");
     }
 
-    /**
-     * Recupera tutte le manifestazioni.
-     *
-     * @return ResponseEntity contenente una lista di manifestazioni
-     */
-    @GetMapping("/all")
+    @GetMapping("/find-all")
     public ResponseEntity<List<Manifestazione>> findAll() {
         List<Manifestazione> manifestazioni = manifestazioneService.findAll();
         return ResponseEntity.status(FOUND).body(manifestazioni);
     }
-
-    /**
-     * Recupera le manifestazioni per nome.
-     *
-     * @param nome Il nome da cercare
-     * @return ResponseEntity contenente una lista di manifestazioni con il nome specificato
-     */
-    @GetMapping("/nome/{nome}")
-    public ResponseEntity<List<Manifestazione>> findAllByNome(@PathVariable String nome) {
-        List<Manifestazione> manifestazioni = manifestazioneService.findAllByNome(nome);
+    @GetMapping("/find-all/cancellato=false")
+    public ResponseEntity<List<Manifestazione>> findAllByIsCancellatoFalse() {
+        List<Manifestazione> manifestazioni = manifestazioneService.findAllByIsCancellatoFalse();
         return ResponseEntity.status(FOUND).body(manifestazioni);
     }
 
-    /**
-     * Recupera le manifestazioni per ID.
-     *
-     * @param id L'ID da cercare
-     * @return ResponseEntity contenente una lista di manifestazioni con l'ID specificato
-     */
-    @GetMapping("/id/{id}")
-    public ResponseEntity<List<Manifestazione>> findAllById(@PathVariable long id) {
-        List<Manifestazione> manifestazioni = manifestazioneService.findAllById(id);
-        return ResponseEntity.status(FOUND).body(manifestazioni);
+    @GetMapping("/find/{nome")
+    public ResponseEntity<Optional<Manifestazione>> findByNome(@PathVariable String nome) {
+        Optional<Manifestazione> optionalManifestazione = manifestazioneService.findByNome(nome);
+        return ResponseEntity.status(FOUND).body(optionalManifestazione);
+    }
+
+    @GetMapping("/find/{nome}/cancellato=false")
+    public ResponseEntity<Optional<Manifestazione>> findByNomeAndIsCancellatoFalse(@PathVariable String nome) {
+        Optional<Manifestazione> optionalManifestazione = manifestazioneService.findByNomeAndIsCancellatoFalse(nome);
+        return ResponseEntity.status(FOUND).body(optionalManifestazione);
+    }
+
+    @GetMapping("/find/{id}")
+    public ResponseEntity<Optional<Manifestazione>> findById(@PathVariable long id) {
+        Optional<Manifestazione> optionalManifestazione = manifestazioneService.findById(id);
+        return ResponseEntity.status(FOUND).body(optionalManifestazione);
+    }
+
+    @GetMapping("/find/{id}/cancellato=false")
+    public ResponseEntity<Optional<Manifestazione>> findByIdAndIsCancellatoFalse(@PathVariable long id) {
+        Optional<Manifestazione> optionalManifestazione = manifestazioneService.findByIdAndIsCancellatoFalse(id);
+        return ResponseEntity.status(FOUND).body(optionalManifestazione);
     }
 
     @GetMapping("/filtraManifestazioni")

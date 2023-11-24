@@ -1,6 +1,7 @@
 package it.dedagroup.manifestazione.mapper;
 
 import it.dedagroup.manifestazione.DTO.Request.ManifestazioneRequest;
+import it.dedagroup.manifestazione.DTO.Request.ManifestazioneRequestConId;
 import it.dedagroup.manifestazione.DTO.Response.ManifestazioneResponse;
 import it.dedagroup.manifestazione.model.Manifestazione;
 import org.springframework.stereotype.Component;
@@ -13,6 +14,7 @@ public class ManifestazioneMapper {
             ManifestazioneResponse DTO = new ManifestazioneResponse();
             DTO.setId(manifestazione.getId());
             DTO.setNome(manifestazione.getNome());
+            DTO.setIdCategoria(manifestazione.getIdCategoria());
             DTO.setCancellato(manifestazione.isCancellato());
             return DTO;
         }
@@ -25,6 +27,14 @@ public class ManifestazioneMapper {
     public Manifestazione fromRequest(ManifestazioneRequest request) {
         Manifestazione manifestazione = new Manifestazione();
         manifestazione.setNome(request.getNome());
+        manifestazione.setIdCategoria(request.getIdCategoria());
+        return manifestazione;
+    }
+
+    public Manifestazione fromRequestConId(ManifestazioneRequestConId request){
+        Manifestazione manifestazione = new Manifestazione();
+        manifestazione.setNome(request.getNome());
+        manifestazione.setIdCategoria(request.getIdCategoria());
         return manifestazione;
     }
 }

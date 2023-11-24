@@ -1,6 +1,10 @@
 package it.dedagroup.manifestazione.service.impl;
 
+
+import it.dedagroup.manifestazione.DTO.Request.ManifestazioneRequest;
+import it.dedagroup.manifestazione.DTO.Request.ManifestazioneRequestConId;
 import it.dedagroup.manifestazione.DTO.Request.FiltroManifestazioneDTORequest;
+
 import it.dedagroup.manifestazione.mapper.ManifestazioneMapper;
 import it.dedagroup.manifestazione.model.Manifestazione;
 import it.dedagroup.manifestazione.repository.CriteriaManifestazioneRepository;
@@ -14,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -23,30 +28,54 @@ public class ManifestazioneServiceImpl implements ManifestazioneServiceDef {
 
     private final ManifestazioneMapper mapper;
 
+
+    /**
+     * Crea una nuova Manifestazione.
+     *
+     * @param request DTO con i campi da inserire.
+     */
+
     private final CriteriaManifestazioneRepository criteriaManifestazioneRepository;
     @Override
     @Transactional(rollbackOn = Exception.class)
-    public void addManifestazione(String nome) {
+    public void addManifestazione(ManifestazioneRequest request) {
         try{
-            Manifestazione newManifestazione = new Manifestazione();
-            newManifestazione.setNome(nome);
-            repository.save(newManifestazione);
+            Manifestazione newManifestazione = mapper.fromRequest(request);
+        repository.save(newManifestazione);
         }catch (OptimisticLockingFailureException e){
             throw new OptimisticLockingFailureException("Questo oggetto è stato modificato");
         }
     }
 
+    /**
+     * Aggiorna i dati di una Manifestazione esistente nel database con l'ID fornito.
+     *
+     * @param request DTO contenente l'id della Manifestazione e i nuovi valori da utilizzare per l'aggiornamento.
+     * @throws ResponseStatusException Se la Manifestazione con l'ID specificato non viene trovata nel database.
+     *                                 Viene sollevata con uno stato HttpStatus.NOT_FOUND.
+     */
     @Override
     @Transactional(rollbackOn = Exception.class)
-    public void updateManifestazioneById(long id) {
+    public void updateManifestazioneById(ManifestazioneRequestConId request) {
         try {
-            Manifestazione manifestazione = repository.findById(id).orElseThrow();
-            repository.save(manifestazione);
+             Manifestazione existingManifestazione = repository.findById(request.getId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Manifestazione non trovata per l'ID: " + request.getId()));
+
+        Manifestazione updatedManifestazione = mapper.fromRequestConId(request);
+        updatedManifestazione.setId(existingManifestazione.getId());
+
+        repository.save(updatedManifestazione);
         }catch (OptimisticLockingFailureException e){
             throw new OptimisticLockingFailureException("Questo oggetto è stato modificato");
         }
     }
 
+    /**
+     * Cancella (solo visivamente) una manifestazione ricercandola per ID.
+     *
+     * @param id Richiede l'inserimento dell'ID della manifestazione;
+     * @implSpec Questo metodo inoltre setterà la variabile "cancellato" al valore true.
+     */
     @Override
     @Transactional(rollbackOn = Exception.class)
     public void deleteManifestazioneById(long id) {
@@ -59,58 +88,98 @@ public class ManifestazioneServiceImpl implements ManifestazioneServiceDef {
         }
     }
 
+    /**
+     * Stampa a schermo tutte le manifestazioni che esistono nel database.
+     *
+     * @return Ritorna una lista di tipo Manifestazione.
+     * @throws ResponseStatusException Se la lista Manifestazioni è vuota.
+     */
     @Override
     public List<Manifestazione> findAll() {
         List<Manifestazione> manifestazioni = repository.findAll();
-        if (manifestazioni.isEmpty()){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        if (manifestazioni.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
         return manifestazioni;
     }
 
+    /**
+     * Stampa a schermo tutte le manifestazioni trovate nel database.
+     *
+     * @return Ritorna una lista di tipo Manifestazione.
+     * @throws ResponseStatusException Se la Manifestazione non viene trovata nel database.
+     */
     @Override
     public List<Manifestazione> findAllByIsCancellatoFalse() {
         List<Manifestazione> manifestazioni = repository.findAllByIsCancellatoFalse();
-        if (manifestazioni.isEmpty()){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        if (manifestazioni.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
         return manifestazioni;
     }
 
+    /**
+     * Restituisce un oggetto Manifestazione cercato per ID.
+     *
+     * @param id L'ID della Manifestazione da cercare nel database.
+     * @return Ritorna l'oggetto Manifestazione corrispondente all'ID fornito.
+     * @throws ResponseStatusException Se la Manifestazione non viene trovata nel database.
+     */
     @Override
-    public List<Manifestazione> findAllById(long id) {
-        List<Manifestazione> manifestazioni = repository.findAllById(id);
-        if (manifestazioni.isEmpty()){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+    public Optional<Manifestazione> findById(long id) {
+        Optional<Manifestazione> optionalManifestazione = repository.findById(id);
+        if (optionalManifestazione.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Manifestazione non trovata per l'ID: " + id);
         }
-        return manifestazioni;
+        return optionalManifestazione;
     }
 
+    /**
+     * Stampa i record del database che presentano l'ID richiesto.
+     *
+     * @param id Richiede id da trovare nel database.
+     * @return Ritorna una lista di tipo Manifestazione.
+     * @throws ResponseStatusException Se la Manifestazione non viene trovata nel database.
+     */
     @Override
-    public List<Manifestazione> findAllByIdAndIsCancellatoFalse(long id) {
-        List<Manifestazione> manifestazioni = repository.findAllByIdAndIsCancellatoFalse(id);
-        if (manifestazioni.isEmpty()){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+    public Optional<Manifestazione> findByIdAndIsCancellatoFalse(long id) {
+        Optional<Manifestazione> optionalManifestazione = repository.findByIdAndIsCancellatoFalse(id);
+        if (optionalManifestazione.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Manifestazione non trovata per l'ID: " + id);
         }
-        return manifestazioni;
+        return optionalManifestazione;
     }
 
+    /**
+     * Esegue una ricerca per nome.
+     *
+     * @param nome Richiede il nome della Manifestazione da ricercare nel database.
+     * @return Ritorna una lista di tipo Manifestazione.
+     * @throws ResponseStatusException Se la Manifestazione non viene trovata nel database.
+     */
     @Override
-    public List<Manifestazione> findAllByNome(String nome) {
-        List<Manifestazione> manifestazioni = repository.findAllByNome(nome);
-        if (manifestazioni.isEmpty()){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+    public Optional<Manifestazione> findByNome(String nome) {
+        Optional<Manifestazione> optionalManifestazione = repository.findByNome(nome);
+        if (optionalManifestazione.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Manifestazione non trovata per il NOME: " + nome);
         }
-        return manifestazioni;
+        return optionalManifestazione;
     }
 
+    /**
+     * Esegue una ricerca per nome.
+     *
+     * @param nome Richiede il nome della Manifestazione da ricercare nel database.
+     * @return Ritorna una lista di tipo Manifestazione.
+     * @throws ResponseStatusException Se la Manifestazione non viene trovata nel database.
+     */
     @Override
-    public List<Manifestazione> findAllByNomeAndIsCancellatoFalse(String nome) {
-        List<Manifestazione> manifestazioni = repository.findAllByNomeAndIsCancellatoFalse(nome);
-        if (manifestazioni.isEmpty()){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+    public Optional<Manifestazione> findByNomeAndIsCancellatoFalse(String nome) {
+        Optional<Manifestazione> optionalManifestazione = repository.findByNomeAndIsCancellatoFalse(nome);
+        if (optionalManifestazione.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Manifestazione non trovata per il NOME: " + nome);
         }
-        return manifestazioni;
+        return optionalManifestazione;
     }
 
     @Override
