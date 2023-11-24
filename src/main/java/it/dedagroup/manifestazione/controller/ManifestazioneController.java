@@ -4,7 +4,6 @@ package it.dedagroup.manifestazione.controller;
 import it.dedagroup.manifestazione.DTO.Request.ManifestazioneRequest;
 import it.dedagroup.manifestazione.DTO.Request.ManifestazioneRequestConId;
 import it.dedagroup.manifestazione.DTO.Request.FiltroManifestazioneDTORequest;
-import it.dedagroup.manifestazione.mapper.ManifestazioneMapper;
 
 import it.dedagroup.manifestazione.model.Manifestazione;
 import it.dedagroup.manifestazione.service.impl.ManifestazioneServiceImpl;
@@ -29,7 +28,7 @@ public class ManifestazioneController {
         return ResponseEntity.status(OK).body("Manifestazione creata.");
     }
 
-    @PutMapping("/update")
+    @PostMapping("/update")
     public ResponseEntity<String> updateManifestazione(@RequestBody ManifestazioneRequestConId request) {
         manifestazioneService.updateManifestazioneById(request);
         return ResponseEntity.status(OK).body("Manifestazione aggiornata.");
@@ -52,7 +51,7 @@ public class ManifestazioneController {
         return ResponseEntity.status(FOUND).body(manifestazioni);
     }
 
-    @GetMapping("/find/{nome")
+    @GetMapping("/find/{nome}")
     public ResponseEntity<Optional<Manifestazione>> findByNome(@PathVariable String nome) {
         Optional<Manifestazione> optionalManifestazione = manifestazioneService.findByNome(nome);
         return ResponseEntity.status(FOUND).body(optionalManifestazione);

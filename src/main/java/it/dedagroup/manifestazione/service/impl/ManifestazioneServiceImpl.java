@@ -12,8 +12,8 @@ import it.dedagroup.manifestazione.repository.ManifestazioneRepository;
 import it.dedagroup.manifestazione.service.def.ManifestazioneServiceDef;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
-import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.http.HttpStatus;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -28,6 +28,7 @@ public class ManifestazioneServiceImpl implements ManifestazioneServiceDef {
 
     private final ManifestazioneMapper mapper;
 
+    private final CriteriaManifestazioneRepository criteriaManifestazioneRepository;
 
     /**
      * Crea una nuova Manifestazione.
@@ -35,15 +36,14 @@ public class ManifestazioneServiceImpl implements ManifestazioneServiceDef {
      * @param request DTO con i campi da inserire.
      */
 
-    private final CriteriaManifestazioneRepository criteriaManifestazioneRepository;
     @Override
     @Transactional(rollbackOn = Exception.class)
     public void addManifestazione(ManifestazioneRequest request) {
         try{
             Manifestazione newManifestazione = mapper.fromRequest(request);
         repository.save(newManifestazione);
-        }catch (OptimisticLockingFailureException e){
-            throw new OptimisticLockingFailureException("Questo oggetto è stato modificato");
+        }catch (ObjectOptimisticLockingFailureException e){
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Questo oggetto è stato modificato");
         }
     }
 
@@ -63,10 +63,11 @@ public class ManifestazioneServiceImpl implements ManifestazioneServiceDef {
 
         Manifestazione updatedManifestazione = mapper.fromRequestConId(request);
         updatedManifestazione.setId(existingManifestazione.getId());
+        updatedManifestazione.setVersion(existingManifestazione.getVersion());
 
         repository.save(updatedManifestazione);
-        }catch (OptimisticLockingFailureException e){
-            throw new OptimisticLockingFailureException("Questo oggetto è stato modificato");
+        }catch (ObjectOptimisticLockingFailureException e){
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Questo oggetto è stato modificato");
         }
     }
 
@@ -83,8 +84,8 @@ public class ManifestazioneServiceImpl implements ManifestazioneServiceDef {
             Manifestazione manifestazione = repository.findById(id).orElseThrow();
             manifestazione.setCancellato(true);
             repository.save(manifestazione);
-        }catch (OptimisticLockingFailureException e){
-            throw new OptimisticLockingFailureException("Questo oggetto è stato modificato");
+        }catch (ObjectOptimisticLockingFailureException e){
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Questo oggetto è stato modificato");
         }
     }
 
@@ -98,7 +99,7 @@ public class ManifestazioneServiceImpl implements ManifestazioneServiceDef {
     public List<Manifestazione> findAll() {
         List<Manifestazione> manifestazioni = repository.findAll();
         if (manifestazioni.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "La lista è vuota.");
         }
         return manifestazioni;
     }
@@ -113,7 +114,7 @@ public class ManifestazioneServiceImpl implements ManifestazioneServiceDef {
     public List<Manifestazione> findAllByIsCancellatoFalse() {
         List<Manifestazione> manifestazioni = repository.findAllByIsCancellatoFalse();
         if (manifestazioni.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "La lista è vuota.");
         }
         return manifestazioni;
     }
