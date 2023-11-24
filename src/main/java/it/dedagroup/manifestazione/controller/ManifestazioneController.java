@@ -1,5 +1,6 @@
 package it.dedagroup.manifestazione.controller;
 
+import it.dedagroup.manifestazione.DTO.Request.FiltroManifestazioneDTORequest;
 import it.dedagroup.manifestazione.mapper.ManifestazioneMapper;
 import it.dedagroup.manifestazione.model.Manifestazione;
 import it.dedagroup.manifestazione.service.impl.ManifestazioneServiceImpl;
@@ -91,6 +92,11 @@ public class ManifestazioneController {
     public ResponseEntity<List<Manifestazione>> findAllById(@PathVariable long id) {
         List<Manifestazione> manifestazioni = manifestazioneService.findAllById(id);
         return ResponseEntity.status(FOUND).body(manifestazioni);
+    }
+
+    @GetMapping("/filtraManifestazioni")
+    public ResponseEntity<List<Manifestazione>> filtraManifestazioni(@RequestBody FiltroManifestazioneDTORequest request){
+        return ResponseEntity.ok().body(manifestazioneService.filtraManifestazioni(request));
     }
 }
 

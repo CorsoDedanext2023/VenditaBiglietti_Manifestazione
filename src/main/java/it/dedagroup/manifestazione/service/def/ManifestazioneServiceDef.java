@@ -1,5 +1,6 @@
 package it.dedagroup.manifestazione.service.def;
 
+import it.dedagroup.manifestazione.DTO.Request.FiltroManifestazioneDTORequest;
 import it.dedagroup.manifestazione.model.Manifestazione;
 
 import java.util.List;
@@ -14,6 +15,7 @@ public interface ManifestazioneServiceDef {
     List<Manifestazione> findAllByIdAndIsCancellatoFalse(long id);
     List<Manifestazione> findAllByNome(String nome);
     List<Manifestazione> findAllByNomeAndIsCancellatoFalse(String nome);
+    List<Manifestazione> filtraManifestazioni(FiltroManifestazioneDTORequest request);
 
 
 }
