@@ -1,7 +1,11 @@
 package it.dedagroup.manifestazione.controller;
 
+
 import it.dedagroup.manifestazione.DTO.Request.ManifestazioneRequest;
 import it.dedagroup.manifestazione.DTO.Request.ManifestazioneRequestConId;
+import it.dedagroup.manifestazione.DTO.Request.FiltroManifestazioneDTORequest;
+import it.dedagroup.manifestazione.mapper.ManifestazioneMapper;
+
 import it.dedagroup.manifestazione.model.Manifestazione;
 import it.dedagroup.manifestazione.service.impl.ManifestazioneServiceImpl;
 import lombok.AllArgsConstructor;
@@ -70,6 +74,11 @@ public class ManifestazioneController {
     public ResponseEntity<Optional<Manifestazione>> findByIdAndIsCancellatoFalse(@PathVariable long id) {
         Optional<Manifestazione> optionalManifestazione = manifestazioneService.findByIdAndIsCancellatoFalse(id);
         return ResponseEntity.status(FOUND).body(optionalManifestazione);
+    }
+
+    @GetMapping("/filtraManifestazioni")
+    public ResponseEntity<List<Manifestazione>> filtraManifestazioni(@RequestBody FiltroManifestazioneDTORequest request){
+        return ResponseEntity.ok().body(manifestazioneService.filtraManifestazioni(request));
     }
 }
 

@@ -1,12 +1,18 @@
 package it.dedagroup.manifestazione.service.impl;
 
+
 import it.dedagroup.manifestazione.DTO.Request.ManifestazioneRequest;
 import it.dedagroup.manifestazione.DTO.Request.ManifestazioneRequestConId;
+import it.dedagroup.manifestazione.DTO.Request.FiltroManifestazioneDTORequest;
+
 import it.dedagroup.manifestazione.mapper.ManifestazioneMapper;
 import it.dedagroup.manifestazione.model.Manifestazione;
+import it.dedagroup.manifestazione.repository.CriteriaManifestazioneRepository;
 import it.dedagroup.manifestazione.repository.ManifestazioneRepository;
 import it.dedagroup.manifestazione.service.def.ManifestazioneServiceDef;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -22,15 +28,23 @@ public class ManifestazioneServiceImpl implements ManifestazioneServiceDef {
 
     private final ManifestazioneMapper mapper;
 
+
     /**
      * Crea una nuova Manifestazione.
      *
      * @param request DTO con i campi da inserire.
      */
+
+    private final CriteriaManifestazioneRepository criteriaManifestazioneRepository;
     @Override
+    @Transactional(rollbackOn = Exception.class)
     public void addManifestazione(ManifestazioneRequest request) {
-        Manifestazione newManifestazione = mapper.fromRequest(request);
+        try{
+            Manifestazione newManifestazione = mapper.fromRequest(request);
         repository.save(newManifestazione);
+        }catch (OptimisticLockingFailureException e){
+            throw new OptimisticLockingFailureException("Questo oggetto è stato modificato");
+        }
     }
 
     /**
@@ -41,14 +55,19 @@ public class ManifestazioneServiceImpl implements ManifestazioneServiceDef {
      *                                 Viene sollevata con uno stato HttpStatus.NOT_FOUND.
      */
     @Override
+    @Transactional(rollbackOn = Exception.class)
     public void updateManifestazioneById(ManifestazioneRequestConId request) {
-        Manifestazione existingManifestazione = repository.findById(request.getId())
+        try {
+             Manifestazione existingManifestazione = repository.findById(request.getId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Manifestazione non trovata per l'ID: " + request.getId()));
 
         Manifestazione updatedManifestazione = mapper.fromRequestConId(request);
         updatedManifestazione.setId(existingManifestazione.getId());
 
         repository.save(updatedManifestazione);
+        }catch (OptimisticLockingFailureException e){
+            throw new OptimisticLockingFailureException("Questo oggetto è stato modificato");
+        }
     }
 
     /**
@@ -58,10 +77,15 @@ public class ManifestazioneServiceImpl implements ManifestazioneServiceDef {
      * @implSpec Questo metodo inoltre setterà la variabile "cancellato" al valore true.
      */
     @Override
+    @Transactional(rollbackOn = Exception.class)
     public void deleteManifestazioneById(long id) {
-        Manifestazione manifestazione = repository.findById(id).orElseThrow();
-        manifestazione.setCancellato(true);
-        repository.save(manifestazione);
+        try {
+            Manifestazione manifestazione = repository.findById(id).orElseThrow();
+            manifestazione.setCancellato(true);
+            repository.save(manifestazione);
+        }catch (OptimisticLockingFailureException e){
+            throw new OptimisticLockingFailureException("Questo oggetto è stato modificato");
+        }
     }
 
     /**
@@ -156,5 +180,10 @@ public class ManifestazioneServiceImpl implements ManifestazioneServiceDef {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Manifestazione non trovata per il NOME: " + nome);
         }
         return optionalManifestazione;
+    }
+
+    @Override
+    public List<Manifestazione> filtraManifestazioni(FiltroManifestazioneDTORequest request) {
+        return criteriaManifestazioneRepository.filtraManifestazioni(request);
     }
 }
