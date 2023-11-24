@@ -15,6 +15,7 @@ public class Manifestazione {
     private Long id;
     private String nome;
     private boolean isCancellato;
+    private Long idCategoria;
     @Version
     private long version;
 }

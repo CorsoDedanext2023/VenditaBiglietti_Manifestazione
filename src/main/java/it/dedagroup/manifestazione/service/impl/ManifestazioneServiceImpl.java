@@ -1,5 +1,6 @@
 package it.dedagroup.manifestazione.service.impl;
 
+import it.dedagroup.manifestazione.DTO.Request.ManifestazioneRequest;
 import it.dedagroup.manifestazione.mapper.ManifestazioneMapper;
 import it.dedagroup.manifestazione.model.Manifestazione;
 import it.dedagroup.manifestazione.repository.ManifestazioneRepository;
@@ -19,9 +20,8 @@ public class ManifestazioneServiceImpl implements ManifestazioneServiceDef {
 
     private final ManifestazioneMapper mapper;
     @Override
-    public void addManifestazione(String nome) {
-        Manifestazione newManifestazione = new Manifestazione();
-        newManifestazione.setNome(nome);
+    public void addManifestazione(ManifestazioneRequest request) {
+        Manifestazione newManifestazione = mapper.fromRequest(request);
         repository.save(newManifestazione);
     }
 

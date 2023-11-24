@@ -1,6 +1,6 @@
 package it.dedagroup.manifestazione.controller;
 
-import it.dedagroup.manifestazione.mapper.ManifestazioneMapper;
+import it.dedagroup.manifestazione.DTO.Request.ManifestazioneRequest;
 import it.dedagroup.manifestazione.model.Manifestazione;
 import it.dedagroup.manifestazione.service.impl.ManifestazioneServiceImpl;
 import lombok.AllArgsConstructor;
@@ -28,9 +28,9 @@ public class ManifestazioneController {
      * @param nome Il nome della manifestazione da creare
      * @return ResponseEntity con un messaggio che indica il successo dell'operazione
      */
-    @GetMapping("/new/{nome}")
-    public ResponseEntity<String> addManifestazione(@PathVariable String nome) {
-        manifestazioneService.addManifestazione(nome);
+    @GetMapping("/new-manifestazione/")
+    public ResponseEntity<String> addManifestazione(@RequestBody ManifestazioneRequest manifestazione) {
+        manifestazioneService.addManifestazione(manifestazione);
         return ResponseEntity.status(OK).body("Manifestazione creata.");
     }
 
@@ -75,21 +75,38 @@ public class ManifestazioneController {
      * @param nome Il nome da cercare
      * @return ResponseEntity contenente una lista di manifestazioni con il nome specificato
      */
-    @GetMapping("/nome/{nome}")
+    @GetMapping("/all/nome/{nome}")
     public ResponseEntity<List<Manifestazione>> findAllByNome(@PathVariable String nome) {
         List<Manifestazione> manifestazioni = manifestazioneService.findAllByNome(nome);
         return ResponseEntity.status(FOUND).body(manifestazioni);
     }
 
+    @GetMapping("/nome/{nome}")
+    public ResponseEntity<List<Manifestazione>> findAllByNomeAndIsCancellatoFalse(@PathVariable String nome) {
+        List<Manifestazione> manifestazioni = manifestazioneService.findAllByNomeAndIsCancellatoFalse(nome);
+        return ResponseEntity.status(FOUND).body(manifestazioni);
+    }
+
     /**
-     * Recupera le manifestazioni per ID.
+     * Recupera tutte le manifestazioni per ID.
+     *
+     * @param id L'ID da cercare
+     * @return ResponseEntity contenente una lista di manifestazioni con l'ID specificato
+     */
+    @GetMapping("/all/id/{id}")
+    public ResponseEntity<List<Manifestazione>> findAllById(@PathVariable long id) {
+        List<Manifestazione> manifestazioni = manifestazioneService.findAllById(id);
+        return ResponseEntity.status(FOUND).body(manifestazioni);
+    }
+    /**
+     * Recupera tutte le manifestazioni per ID.
      *
      * @param id L'ID da cercare
      * @return ResponseEntity contenente una lista di manifestazioni con l'ID specificato
      */
     @GetMapping("/id/{id}")
-    public ResponseEntity<List<Manifestazione>> findAllById(@PathVariable long id) {
-        List<Manifestazione> manifestazioni = manifestazioneService.findAllById(id);
+    public ResponseEntity<List<Manifestazione>> findAllByIdAndIsCancellatoFalse(@PathVariable long id) {
+        List<Manifestazione> manifestazioni = manifestazioneService.findAllByIdAndIsCancellatoFalse(id);
         return ResponseEntity.status(FOUND).body(manifestazioni);
     }
 }

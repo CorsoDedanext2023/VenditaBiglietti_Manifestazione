@@ -13,5 +13,6 @@ import lombok.NoArgsConstructor;
 public class ManifestazioneResponse {
     private Long id;
     private String nome;
+    private Long idCategoria;
     private boolean isCancellato;
 }

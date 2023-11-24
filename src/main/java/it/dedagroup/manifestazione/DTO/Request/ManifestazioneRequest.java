@@ -8,5 +8,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ManifestazioneRequest {
-    String nome;
+    private String nome;
+    private Long idCategoria;
 }
