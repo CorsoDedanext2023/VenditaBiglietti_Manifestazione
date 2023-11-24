@@ -10,4 +10,5 @@ import lombok.NoArgsConstructor;
 public class ManifestazioneRequest {
     private String nome;
     private Long idCategoria;
+    private Long idUtente;
 }

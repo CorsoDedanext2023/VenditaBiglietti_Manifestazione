@@ -11,7 +11,8 @@ import lombok.NoArgsConstructor;
 public class ManifestazioneRequestConId {
     private Long id;
     private String nome;
-    private Long idCategoria;
+    private long idCategoria;
+    private long idUtente;
 
     @Version
     private Long version;

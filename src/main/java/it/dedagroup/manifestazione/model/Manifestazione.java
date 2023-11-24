@@ -14,7 +14,7 @@ public class Manifestazione {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nome;
-    private Long idCategoria;
+    private long idCategoria;
     private long idUtente;
     private boolean isCancellato;
     @Version

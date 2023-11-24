@@ -14,6 +14,7 @@ public class ManifestazioneMapper {
             ManifestazioneResponse DTO = new ManifestazioneResponse();
             DTO.setId(manifestazione.getId());
             DTO.setNome(manifestazione.getNome());
+            DTO.setIdUtente(manifestazione.getIdUtente());
             DTO.setIdCategoria(manifestazione.getIdCategoria());
             DTO.setCancellato(manifestazione.isCancellato());
             return DTO;
@@ -34,6 +35,7 @@ public class ManifestazioneMapper {
     public Manifestazione fromRequestConId(ManifestazioneRequestConId request){
         Manifestazione manifestazione = new Manifestazione();
         manifestazione.setNome(request.getNome());
+        manifestazione.setIdUtente(request.getIdUtente());
         manifestazione.setIdCategoria(request.getIdCategoria());
         return manifestazione;
     }

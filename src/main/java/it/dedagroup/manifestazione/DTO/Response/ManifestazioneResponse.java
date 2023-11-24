@@ -14,5 +14,6 @@ public class ManifestazioneResponse {
     private Long id;
     private String nome;
     private Long idCategoria;
+    private long idUtente;
     private boolean isCancellato;
 }
