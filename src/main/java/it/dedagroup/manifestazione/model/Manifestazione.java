@@ -17,7 +17,6 @@ public class Manifestazione {
     private Long idCategoria;
     private long idUtente;
     private boolean isCancellato;
-    private Long idCategoria;
     @Version
     private long version;
 }
