@@ -4,12 +4,12 @@ import it.dedagroup.manifestazione.model.Manifestazione;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ManifestazioneRepository extends JpaRepository<Manifestazione,Long> {
-    List<Manifestazione> findAll();
     List<Manifestazione> findAllByIsCancellatoFalse();
-    List<Manifestazione> findAllById(long id);
-    List<Manifestazione> findAllByNome(String nome);
-    List<Manifestazione> findAllByIdAndIsCancellatoFalse(long id);
-    List<Manifestazione> findAllByNomeAndIsCancellatoFalse(String Nome);
+    Optional<Manifestazione> findById(long id);
+    Optional<Manifestazione> findByIdAndIsCancellatoFalse(long id);
+    Optional<Manifestazione> findByNome(String nome);
+    Optional<Manifestazione> findByNomeAndIsCancellatoFalse(String Nome);
 }
