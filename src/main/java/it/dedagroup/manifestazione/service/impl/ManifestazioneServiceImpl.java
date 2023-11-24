@@ -1,7 +1,9 @@
 package it.dedagroup.manifestazione.service.impl;
 
+import it.dedagroup.manifestazione.DTO.Request.FiltroManifestazioneDTORequest;
 import it.dedagroup.manifestazione.mapper.ManifestazioneMapper;
 import it.dedagroup.manifestazione.model.Manifestazione;
+import it.dedagroup.manifestazione.repository.CriteriaManifestazioneRepository;
 import it.dedagroup.manifestazione.repository.ManifestazioneRepository;
 import it.dedagroup.manifestazione.service.def.ManifestazioneServiceDef;
 import jakarta.transaction.Transactional;
@@ -20,6 +22,8 @@ public class ManifestazioneServiceImpl implements ManifestazioneServiceDef {
     private final ManifestazioneRepository repository;
 
     private final ManifestazioneMapper mapper;
+
+    private final CriteriaManifestazioneRepository criteriaManifestazioneRepository;
     @Override
     @Transactional(rollbackOn = Exception.class)
     public void addManifestazione(String nome) {
@@ -107,5 +111,10 @@ public class ManifestazioneServiceImpl implements ManifestazioneServiceDef {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
         return manifestazioni;
+    }
+
+    @Override
+    public List<Manifestazione> filtraManifestazioni(FiltroManifestazioneDTORequest request) {
+        return criteriaManifestazioneRepository.filtraManifestazioni(request);
     }
 }
