@@ -1,10 +1,9 @@
 package it.dedagroup.manifestazione.service.impl;
 
 
+import it.dedagroup.manifestazione.DTO.Request.FiltroManifestazioneDTORequest;
 import it.dedagroup.manifestazione.DTO.Request.ManifestazioneRequest;
 import it.dedagroup.manifestazione.DTO.Request.ManifestazioneRequestConId;
-import it.dedagroup.manifestazione.DTO.Request.FiltroManifestazioneDTORequest;
-
 import it.dedagroup.manifestazione.mapper.ManifestazioneMapper;
 import it.dedagroup.manifestazione.model.Manifestazione;
 import it.dedagroup.manifestazione.repository.CriteriaManifestazioneRepository;
@@ -39,10 +38,10 @@ public class ManifestazioneServiceImpl implements ManifestazioneServiceDef {
     @Override
     @Transactional(rollbackOn = Exception.class)
     public void addManifestazione(ManifestazioneRequest request) {
-        try{
+        try {
             Manifestazione newManifestazione = mapper.fromRequest(request);
-        repository.save(newManifestazione);
-        }catch (ObjectOptimisticLockingFailureException e){
+            repository.save(newManifestazione);
+        } catch (ObjectOptimisticLockingFailureException e) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Questo oggetto è stato modificato");
         }
     }
@@ -58,15 +57,15 @@ public class ManifestazioneServiceImpl implements ManifestazioneServiceDef {
     @Transactional(rollbackOn = Exception.class)
     public void updateManifestazioneById(ManifestazioneRequestConId request) {
         try {
-             Manifestazione existingManifestazione = repository.findById(request.getId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Manifestazione non trovata per l'ID: " + request.getId()));
+            Manifestazione existingManifestazione = repository.findById(request.getId())
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Manifestazione non trovata per l'ID: " + request.getId()));
 
-        Manifestazione updatedManifestazione = mapper.fromRequestConId(request);
-        updatedManifestazione.setId(existingManifestazione.getId());
-        updatedManifestazione.setVersion(existingManifestazione.getVersion());
+            Manifestazione updatedManifestazione = mapper.fromRequestConId(request);
+            updatedManifestazione.setId(existingManifestazione.getId());
+            updatedManifestazione.setVersion(existingManifestazione.getVersion());
 
-        repository.save(updatedManifestazione);
-        }catch (ObjectOptimisticLockingFailureException e){
+            repository.save(updatedManifestazione);
+        } catch (ObjectOptimisticLockingFailureException e) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Questo oggetto è stato modificato");
         }
     }
@@ -84,7 +83,7 @@ public class ManifestazioneServiceImpl implements ManifestazioneServiceDef {
             Manifestazione manifestazione = repository.findById(id).orElseThrow();
             manifestazione.setCancellato(true);
             repository.save(manifestazione);
-        }catch (ObjectOptimisticLockingFailureException e){
+        } catch (ObjectOptimisticLockingFailureException e) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Questo oggetto è stato modificato");
         }
     }
@@ -183,6 +182,12 @@ public class ManifestazioneServiceImpl implements ManifestazioneServiceDef {
         return optionalManifestazione;
     }
 
+    /**
+     * Questo metodo esegue una ricerca filtrando i risultati.
+     *
+     * @param request DTO in richiesta, per il nome.
+     * @return una lista di tipo Manifestazione
+     */
     @Override
     public List<Manifestazione> filtraManifestazioni(FiltroManifestazioneDTORequest request) {
         return criteriaManifestazioneRepository.filtraManifestazioni(request);
