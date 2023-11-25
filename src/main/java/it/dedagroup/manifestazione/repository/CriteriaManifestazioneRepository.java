@@ -12,9 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Repository
 public class CriteriaManifestazioneRepository {
@@ -26,7 +24,8 @@ public class CriteriaManifestazioneRepository {
         CriteriaQuery<Tuple> query = builder.createQuery(Tuple.class);
         Root<Manifestazione> root = query.from(Manifestazione.class);
         List<Predicate> predicate = new ArrayList<>();
-        if(request.getNome() != null) predicate.add(builder.like(builder.lower(root.get("nome")), "%"+ request.getNome().toLowerCase()+"%"));
+        if (request.getNome() != null)
+            predicate.add(builder.like(builder.lower(root.get("nome")), "%" + request.getNome().toLowerCase() + "%"));
         Predicate[] predicateArray = predicate.toArray(new Predicate[predicate.size()]);
         query.where(predicateArray);
         List<Tuple> list = manager.createQuery(query).getResultList();
