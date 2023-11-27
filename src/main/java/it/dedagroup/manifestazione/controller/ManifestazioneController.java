@@ -13,8 +13,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
-import static org.springframework.http.HttpStatus.FOUND;
-import static org.springframework.http.HttpStatus.OK;
 
 @RestController
 @AllArgsConstructor
@@ -26,55 +24,55 @@ public class ManifestazioneController {
     @PostMapping("/new")
     public ResponseEntity<String> addManifestazione(@RequestBody ManifestazioneRequest request) {
         manifestazioneService.addManifestazione(request);
-        return ResponseEntity.status(OK).body("Manifestazione creata.");
+        return ResponseEntity.ok().body("Manifestazione creata.");
     }
 
     @PostMapping("/update")
     public ResponseEntity<String> updateManifestazione(@RequestBody ManifestazioneRequestConId request) {
         manifestazioneService.updateManifestazioneById(request);
-        return ResponseEntity.status(OK).body("Manifestazione aggiornata.");
+        return ResponseEntity.ok().body("Manifestazione aggiornata.");
     }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteById(@PathVariable long id) {
         manifestazioneService.deleteManifestazioneById(id);
-        return ResponseEntity.status(OK).body("Manifestazione eliminata.");
+        return ResponseEntity.ok().body("Manifestazione eliminata.");
     }
 
     @GetMapping("/find-all")
     public ResponseEntity<List<Manifestazione>> findAll() {
         List<Manifestazione> manifestazioni = manifestazioneService.findAll();
-        return ResponseEntity.status(FOUND).body(manifestazioni);
+        return ResponseEntity.ok().body(manifestazioni);
     }
 
     @GetMapping("/find-all/cancellato=false")
     public ResponseEntity<List<Manifestazione>> findAllByIsCancellatoFalse() {
         List<Manifestazione> manifestazioni = manifestazioneService.findAllByIsCancellatoFalse();
-        return ResponseEntity.status(FOUND).body(manifestazioni);
+        return ResponseEntity.ok().body(manifestazioni);
     }
 
     @GetMapping("/find-name/{nome}")
     public ResponseEntity<Optional<Manifestazione>> findByNome(@PathVariable String nome) {
         Optional<Manifestazione> optionalManifestazione = manifestazioneService.findByNome(nome);
-        return ResponseEntity.status(FOUND).body(optionalManifestazione);
+        return ResponseEntity.ok().body(optionalManifestazione);
     }
 
     @GetMapping("/find-name/{nome}/cancellato=false")
     public ResponseEntity<Optional<Manifestazione>> findByNomeAndIsCancellatoFalse(@PathVariable String nome) {
         Optional<Manifestazione> optionalManifestazione = manifestazioneService.findByNomeAndIsCancellatoFalse(nome);
-        return ResponseEntity.status(FOUND).body(optionalManifestazione);
+        return ResponseEntity.ok().body(optionalManifestazione);
     }
 
     @GetMapping("/find-id/{id}")
     public ResponseEntity<Optional<Manifestazione>> findById(@PathVariable long id) {
         Optional<Manifestazione> optionalManifestazione = manifestazioneService.findById(id);
-        return ResponseEntity.status(FOUND).body(optionalManifestazione);
+        return ResponseEntity.ok().body(optionalManifestazione);
     }
 
     @GetMapping("/find-id/{id}/cancellato=false")
     public ResponseEntity<Optional<Manifestazione>> findByIdAndIsCancellatoFalse(@PathVariable long id) {
         Optional<Manifestazione> optionalManifestazione = manifestazioneService.findByIdAndIsCancellatoFalse(id);
-        return ResponseEntity.status(FOUND).body(optionalManifestazione);
+        return ResponseEntity.ok().body(optionalManifestazione);
     }
 
     @GetMapping("/filtraManifestazioni")
