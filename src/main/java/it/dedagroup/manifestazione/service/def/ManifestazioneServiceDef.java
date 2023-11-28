@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ManifestazioneServiceDef {
-    void addManifestazione(ManifestazioneRequest request);
+    void addManifestazione(ManifestazioneRequestConId request);
 
     void updateManifestazioneById(ManifestazioneRequestConId request);
 

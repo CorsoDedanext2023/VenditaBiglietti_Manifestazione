@@ -2,7 +2,6 @@ package it.dedagroup.manifestazione.service.impl;
 
 
 import it.dedagroup.manifestazione.DTO.Request.FiltroManifestazioneDTORequest;
-import it.dedagroup.manifestazione.DTO.Request.ManifestazioneRequest;
 import it.dedagroup.manifestazione.DTO.Request.ManifestazioneRequestConId;
 import it.dedagroup.manifestazione.mapper.ManifestazioneMapper;
 import it.dedagroup.manifestazione.model.Manifestazione;
@@ -37,11 +36,11 @@ public class ManifestazioneServiceImpl implements ManifestazioneServiceDef {
 
     @Override
     @Transactional(rollbackOn = Exception.class)
-    public void addManifestazione(ManifestazioneRequest request) {
-        try {
-            Manifestazione newManifestazione = mapper.fromRequest(request);
-            repository.save(newManifestazione);
-        } catch (ObjectOptimisticLockingFailureException e) {
+    public void addManifestazione(ManifestazioneRequestConId request) {
+        try{
+            Manifestazione newManifestazione = mapper.fromRequestConId(request);
+        repository.save(newManifestazione);
+        }catch (ObjectOptimisticLockingFailureException e){
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Questo oggetto è stato modificato");
         }
     }
