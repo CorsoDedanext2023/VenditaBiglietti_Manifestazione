@@ -22,7 +22,7 @@ public class ManifestazioneController {
     private final ManifestazioneServiceImpl manifestazioneService;
 
     @PostMapping("/new")
-    public ResponseEntity<String> addManifestazione(@RequestBody ManifestazioneRequest request) {
+    public ResponseEntity<String> addManifestazione(@RequestBody ManifestazioneRequestConId request) {
         manifestazioneService.addManifestazione(request);
         return ResponseEntity.ok().body("Manifestazione creata.");
     }
