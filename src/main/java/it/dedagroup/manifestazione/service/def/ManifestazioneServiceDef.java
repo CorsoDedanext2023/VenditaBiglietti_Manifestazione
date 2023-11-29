@@ -20,13 +20,13 @@ public interface ManifestazioneServiceDef {
 
     List<Manifestazione> findAllByIsCancellatoFalse();
 
-    Optional<Manifestazione> findById(long id);
+    Manifestazione findById(long id);
 
-    Optional<Manifestazione> findByIdAndIsCancellatoFalse(long id);
+    Manifestazione findByIdAndIsCancellatoFalse(long id);
 
-    Optional<Manifestazione> findByNome(String nome);
+    Manifestazione findByNome(String nome);
 
-    Optional<Manifestazione> findByNomeAndIsCancellatoFalse(String nome);
+    Manifestazione findByNomeAndIsCancellatoFalse(String nome);
 
     List<Manifestazione> filtraManifestazioni(FiltroManifestazioneDTORequest request);
 }

@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -37,12 +36,8 @@ public class ManifestazioneServiceImpl implements ManifestazioneServiceDef {
     @Override
     @Transactional(rollbackOn = Exception.class)
     public void addManifestazione(ManifestazioneRequestConId request) {
-        try{
-            Manifestazione newManifestazione = mapper.fromRequestConId(request);
+        Manifestazione newManifestazione = mapper.fromRequestConId(request);
         repository.save(newManifestazione);
-        }catch (ObjectOptimisticLockingFailureException e){
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Questo oggetto è stato modificato");
-        }
     }
 
     /**
@@ -56,14 +51,14 @@ public class ManifestazioneServiceImpl implements ManifestazioneServiceDef {
     @Transactional(rollbackOn = Exception.class)
     public void updateManifestazioneById(ManifestazioneRequestConId request) {
         try {
-            Manifestazione existingManifestazione = repository.findById(request.getId())
-                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Manifestazione non trovata per l'ID: " + request.getId()));
+            Manifestazione existingManifestazione = findById(request.getId());
 
             Manifestazione updatedManifestazione = mapper.fromRequestConId(request);
-            updatedManifestazione.setId(existingManifestazione.getId());
-            updatedManifestazione.setVersion(existingManifestazione.getVersion());
+            existingManifestazione.setNome(updatedManifestazione.getNome());
+            existingManifestazione.setIdCategoria(updatedManifestazione.getIdCategoria());
+            existingManifestazione.setIdUtente(updatedManifestazione.getIdUtente());
 
-            repository.save(updatedManifestazione);
+            repository.save(existingManifestazione);
         } catch (ObjectOptimisticLockingFailureException e) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Questo oggetto è stato modificato");
         }
@@ -79,7 +74,7 @@ public class ManifestazioneServiceImpl implements ManifestazioneServiceDef {
     @Transactional(rollbackOn = Exception.class)
     public void deleteManifestazioneById(long id) {
         try {
-            Manifestazione manifestazione = repository.findById(id).orElseThrow();
+            Manifestazione manifestazione = findById(id);
             manifestazione.setCancellato(true);
             repository.save(manifestazione);
         } catch (ObjectOptimisticLockingFailureException e) {
@@ -125,12 +120,9 @@ public class ManifestazioneServiceImpl implements ManifestazioneServiceDef {
      * @throws ResponseStatusException Se la Manifestazione non viene trovata nel database.
      */
     @Override
-    public Optional<Manifestazione> findById(long id) {
-        Optional<Manifestazione> optionalManifestazione = repository.findById(id);
-        if (optionalManifestazione.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Manifestazione non trovata per l'ID: " + id);
-        }
-        return optionalManifestazione;
+    public Manifestazione findById(long id) {
+        return repository.findById(id)
+                .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "Nessuna manifestazione trovata con ID: " +id));
     }
 
     /**
@@ -141,12 +133,9 @@ public class ManifestazioneServiceImpl implements ManifestazioneServiceDef {
      * @throws ResponseStatusException Se la Manifestazione non viene trovata nel database.
      */
     @Override
-    public Optional<Manifestazione> findByIdAndIsCancellatoFalse(long id) {
-        Optional<Manifestazione> optionalManifestazione = repository.findByIdAndIsCancellatoFalse(id);
-        if (optionalManifestazione.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Manifestazione non trovata per l'ID: " + id);
-        }
-        return optionalManifestazione;
+    public Manifestazione findByIdAndIsCancellatoFalse(long id) {
+        return repository.findByIdAndIsCancellatoFalse(id)
+                .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"Nessuna manifestazione trovata con ID: " +id));
     }
 
     /**
@@ -157,12 +146,9 @@ public class ManifestazioneServiceImpl implements ManifestazioneServiceDef {
      * @throws ResponseStatusException Se la Manifestazione non viene trovata nel database.
      */
     @Override
-    public Optional<Manifestazione> findByNome(String nome) {
-        Optional<Manifestazione> optionalManifestazione = repository.findByNome(nome);
-        if (optionalManifestazione.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Manifestazione non trovata per il NOME: " + nome);
-        }
-        return optionalManifestazione;
+    public Manifestazione findByNome(String nome) {
+        return repository.findByNome(nome)
+                .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"Nessuna manifestazione trovata con ID: " +nome));
     }
 
     /**
@@ -173,12 +159,9 @@ public class ManifestazioneServiceImpl implements ManifestazioneServiceDef {
      * @throws ResponseStatusException Se la Manifestazione non viene trovata nel database.
      */
     @Override
-    public Optional<Manifestazione> findByNomeAndIsCancellatoFalse(String nome) {
-        Optional<Manifestazione> optionalManifestazione = repository.findByNomeAndIsCancellatoFalse(nome);
-        if (optionalManifestazione.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Manifestazione non trovata per il NOME: " + nome);
-        }
-        return optionalManifestazione;
+    public Manifestazione findByNomeAndIsCancellatoFalse(String nome) {
+        return repository.findByNomeAndIsCancellatoFalse(nome)
+                .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"Nessuna manifestazione trovata con ID: " +nome));
     }
 
     /**

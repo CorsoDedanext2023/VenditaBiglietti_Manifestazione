@@ -6,6 +6,7 @@ import it.dedagroup.manifestazione.DTO.Request.ManifestazioneRequest;
 import it.dedagroup.manifestazione.DTO.Request.ManifestazioneRequestConId;
 import it.dedagroup.manifestazione.model.Manifestazione;
 import it.dedagroup.manifestazione.service.impl.ManifestazioneServiceImpl;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,19 +23,19 @@ public class ManifestazioneController {
     private final ManifestazioneServiceImpl manifestazioneService;
 
     @PostMapping("/new")
-    public ResponseEntity<String> addManifestazione(@RequestBody ManifestazioneRequestConId request) {
+    public ResponseEntity<String> addManifestazione( @Valid @RequestBody ManifestazioneRequestConId request) {
         manifestazioneService.addManifestazione(request);
         return ResponseEntity.ok().body("Manifestazione creata.");
     }
 
     @PostMapping("/update")
-    public ResponseEntity<String> updateManifestazione(@RequestBody ManifestazioneRequestConId request) {
+    public ResponseEntity<String> updateManifestazione(@Valid @RequestBody ManifestazioneRequestConId request) {
         manifestazioneService.updateManifestazioneById(request);
         return ResponseEntity.ok().body("Manifestazione aggiornata.");
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<String> deleteById(@PathVariable long id) {
+    public ResponseEntity<String> deleteById(@Valid @PathVariable long id) {
         manifestazioneService.deleteManifestazioneById(id);
         return ResponseEntity.ok().body("Manifestazione eliminata.");
     }
@@ -52,31 +53,31 @@ public class ManifestazioneController {
     }
 
     @GetMapping("/find-name/{nome}")
-    public ResponseEntity<Optional<Manifestazione>> findByNome(@PathVariable String nome) {
-        Optional<Manifestazione> optionalManifestazione = manifestazioneService.findByNome(nome);
-        return ResponseEntity.ok().body(optionalManifestazione);
+    public ResponseEntity<Manifestazione> findByNome(@Valid @PathVariable String nome) {
+        Manifestazione m = manifestazioneService.findByNome(nome);
+        return ResponseEntity.ok().body(m);
     }
 
     @GetMapping("/find-name/{nome}/cancellato=false")
-    public ResponseEntity<Optional<Manifestazione>> findByNomeAndIsCancellatoFalse(@PathVariable String nome) {
-        Optional<Manifestazione> optionalManifestazione = manifestazioneService.findByNomeAndIsCancellatoFalse(nome);
-        return ResponseEntity.ok().body(optionalManifestazione);
+    public ResponseEntity<Manifestazione> findByNomeAndIsCancellatoFalse(@Valid @PathVariable String nome) {
+        Manifestazione m = manifestazioneService.findByNomeAndIsCancellatoFalse(nome);
+        return ResponseEntity.ok().body(m);
     }
 
     @GetMapping("/find-id/{id}")
-    public ResponseEntity<Optional<Manifestazione>> findById(@PathVariable long id) {
-        Optional<Manifestazione> optionalManifestazione = manifestazioneService.findById(id);
-        return ResponseEntity.ok().body(optionalManifestazione);
+    public ResponseEntity<Manifestazione> findById(@Valid @PathVariable long id) {
+        Manifestazione m = manifestazioneService.findById(id);
+        return ResponseEntity.ok().body(m);
     }
 
     @GetMapping("/find-id/{id}/cancellato=false")
-    public ResponseEntity<Optional<Manifestazione>> findByIdAndIsCancellatoFalse(@PathVariable long id) {
-        Optional<Manifestazione> optionalManifestazione = manifestazioneService.findByIdAndIsCancellatoFalse(id);
-        return ResponseEntity.ok().body(optionalManifestazione);
+    public ResponseEntity<Manifestazione> findByIdAndIsCancellatoFalse(@Valid @PathVariable long id) {
+        Manifestazione m = manifestazioneService.findByIdAndIsCancellatoFalse(id);
+        return ResponseEntity.ok().body(m);
     }
 
     @GetMapping("/filtraManifestazioni")
-    public ResponseEntity<List<Manifestazione>> filtraManifestazioni(@RequestBody FiltroManifestazioneDTORequest request) {
+    public ResponseEntity<List<Manifestazione>> filtraManifestazioni(@Valid @RequestBody FiltroManifestazioneDTORequest request) {
         return ResponseEntity.ok().body(manifestazioneService.filtraManifestazioni(request));
     }
 }

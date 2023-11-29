@@ -90,7 +90,7 @@ class VenditaBigliettiManifestazioneApplicationTests {
         mock.perform(MockMvcRequestBuilders.get("/manifestazione/find-all")
                         .contentType(MediaType.APPLICATION_JSON)
                 )
-                .andExpect(MockMvcResultMatchers.status().isFound())
+                .andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
                 .andReturn();
     }
 
@@ -101,7 +101,7 @@ class VenditaBigliettiManifestazioneApplicationTests {
         mock.perform(MockMvcRequestBuilders.get("/manifestazione/find-name/{nome}", nome)
                         .contentType(MediaType.APPLICATION_JSON)
                 )
-                .andExpect(MockMvcResultMatchers.status().isFound())
+                .andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
                 .andReturn();
     }
 
@@ -123,7 +123,7 @@ class VenditaBigliettiManifestazioneApplicationTests {
         mock.perform(MockMvcRequestBuilders.get("/manifestazione/find-id/{id}", id)
                         .contentType(MediaType.APPLICATION_JSON)
                 )
-                .andExpect(MockMvcResultMatchers.status().isFound())
+                .andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
                 .andReturn();
     }
 
