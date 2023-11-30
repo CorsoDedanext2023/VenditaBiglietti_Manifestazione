@@ -76,7 +76,7 @@ public class ManifestazioneController {
         return ResponseEntity.ok().body(m);
     }
 
-    @GetMapping("/filtraManifestazioni")
+    @PostMapping("/filtraManifestazioni")
     public ResponseEntity<List<Manifestazione>> filtraManifestazioni(@Valid @RequestBody FiltroManifestazioneDTORequest request) {
         return ResponseEntity.ok().body(manifestazioneService.filtraManifestazioni(request));
     }

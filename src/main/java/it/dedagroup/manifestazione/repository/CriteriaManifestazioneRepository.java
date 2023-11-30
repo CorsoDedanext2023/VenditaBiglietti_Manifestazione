@@ -24,8 +24,8 @@ public class CriteriaManifestazioneRepository {
         CriteriaQuery<Tuple> query = builder.createQuery(Tuple.class);
         Root<Manifestazione> root = query.from(Manifestazione.class);
         List<Predicate> predicate = new ArrayList<>();
-        if (request.getNome() != null)
-            predicate.add(builder.like(builder.lower(root.get("nome")), "%" + request.getNome().toLowerCase() + "%"));
+        if(request.getNome() != null) predicate.add(builder.like(builder.lower(root.get("nome")), "%"+ request.getNome().toLowerCase()+"%"));
+        predicate.add(builder.equal(root.get("isCancellato"), false));
         Predicate[] predicateArray = predicate.toArray(new Predicate[predicate.size()]);
         query.where(predicateArray);
         List<Tuple> list = manager.createQuery(query).getResultList();
